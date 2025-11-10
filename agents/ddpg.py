@@ -142,3 +142,14 @@ class DDPGAgent:
         self.critic.compile(keras.optimizers.Adam(learning_rate=beta))
         self.target_actor.compile(keras.optimizers.Adam(learning_rate=alpha))
         self.target_critic.compile(keras.optimizers.Adam(learning_rate=beta))
+    
+    def build_networks(self, state):
+        """Build the networks by doing a forward pass"""
+        state = tf.convert_to_tensor([state], dtype=tf.float32)
+        # Build actor networks
+        self.actor(state)
+        self.target_actor(state)
+        # Build critic networks  
+        action = self.actor(state)
+        self.critic(state, action)
+        self.target_critic(state, action)
